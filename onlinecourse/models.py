@@ -98,32 +98,39 @@ class Enrollment(models.Model):
 
 # Question Model
 class Question(models.Model):
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-    question_text = models.CharField(max_length=1000)
-    grade = models.IntegerField(default=1)
-    question_grade = models.FloatField(default=1.0)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    content = models.CharField(max_length=200)
+    grade = models.IntegerField(default=50)
+
+    # Alternate property for compatibility
+    @property
+    def question_text(self):
+        return self.content
 
     def __str__(self):
-        return self.question_text
+        return "Question: " + self.content
 
-    # A sample model method to calculate if learner gets the score of the question
     def is_get_score(self, selected_ids):
         all_answers = self.choice_set.filter(is_correct=True).count()
         selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
-        if all_answers == selected_correct and all_answers > 0:
+        if all_answers == selected_correct:
             return True
-        return False
+        else:
+            return False
 
 
 # Choice Model
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
+    content = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
 
+    @property
+    def choice_text(self):
+        return self.content
+
     def __str__(self):
-        return self.choice_text
+        return self.content
 
 
 # Submission Model
@@ -131,7 +138,5 @@ class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choice)
 
-    def __str__(self):
-        return f"Submission {self.id}"
 
 

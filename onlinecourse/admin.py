@@ -26,14 +26,15 @@ class CourseAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
 
 
-class LessonAdmin(admin.ModelAdmin):
-    list_display = ['title']
-    inlines = [QuestionInline]
-
-
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [ChoiceInline]
-    list_display = ['question_text']
+    list_display = ['content']
+
+
+class LessonAdmin(admin.ModelAdmin):
+    list_display = ['title']
+
+
 
 
 # <HINT> Register Question and Choice models here

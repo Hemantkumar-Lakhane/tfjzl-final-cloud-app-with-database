@@ -51,32 +51,51 @@
     <div class="card-columns-vertical mt-3">
         <h5 class="mb-3">Exam results</h5>
         <!--HINT Display exam results-->
-        {% for lesson in course.lesson_set.all %}
-            {% for question in lesson.question_set.all %}
+        {% if course.question_set.all %}
+            {% for question in course.question_set.all %}
             <div class="card mt-2">
-                <div class="card-header"><h5 style="font-weight:bold">{{ question.question_text }}</h5></div>
+                <div class="card-header"><h5 style="font-weight:bold">{{ question.content }}</h5></div>
                 <div class="card-body">
                     {% for choice in question.choice_set.all %}
                     <div class="form-check">
-                        {% if choice.id in selected %}
+                        {% if choice.id in selected_ids or choice in choices %}
                             {% if choice.is_correct %}
-                                <label style="color:green;font-weight:bold">✓ Correct answer: {{ choice.choice_text }}</label>
+                                <label style="color:green;font-weight:bold">Correct answer: {{ choice.content }}</label>
                             {% else %}
-                                <label style="color:red;font-weight:bold">✗ Wrong answer: {{ choice.choice_text }}</label>
+                                <label style="color:red;font-weight:bold">Wrong answer: {{ choice.content }}</label>
                             {% endif %}
                         {% else %}
-                            {% if choice.is_correct %}
-                                <label style="color:green;font-weight:bold">(Correct answer: {{ choice.choice_text }})</label>
-                            {% else %}
-                                <label>{{ choice.choice_text }}</label>
-                            {% endif %}
+                            <label>{{ choice.content }}</label>
                         {% endif %}
                     </div>
                     {% endfor %}
                 </div>
             </div>
             {% endfor %}
-        {% endfor %}
+        {% else %}
+            {% for lesson in course.lesson_set.all %}
+                {% for question in lesson.question_set.all %}
+                <div class="card mt-2">
+                    <div class="card-header"><h5 style="font-weight:bold">{{ question.content }}</h5></div>
+                    <div class="card-body">
+                        {% for choice in question.choice_set.all %}
+                        <div class="form-check">
+                            {% if choice.id in selected_ids or choice in choices %}
+                                {% if choice.is_correct %}
+                                    <label style="color:green;font-weight:bold">Correct answer: {{ choice.content }}</label>
+                                {% else %}
+                                    <label style="color:red;font-weight:bold">Wrong answer: {{ choice.content }}</label>
+                                {% endif %}
+                            {% else %}
+                                <label>{{ choice.content }}</label>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
     </div>
     </div>
 </body>
