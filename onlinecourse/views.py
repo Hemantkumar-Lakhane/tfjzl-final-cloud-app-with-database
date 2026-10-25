@@ -142,16 +142,16 @@ def show_exam_result(request, course_id, submission_id):
     context = {}
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
-    selected_choice_ids = list(submission.choices.values_list('id', flat=True))
+    selected_ids = list(submission.choices.values_list('id', flat=True))
 
     total_score = 0
     total_possible = 0
 
     for lesson in course.lesson_set.all():
         for question in lesson.question_set.all():
-            q_grade = getattr(question, 'grade', getattr(question, 'question_grade', 50))
+            q_grade = getattr(question, 'grade', 1)
             total_possible += q_grade
-            if question.is_get_score(selected_choice_ids):
+            if question.is_get_score(selected_ids):
                 total_score += q_grade
 
     if total_possible > 0:
@@ -161,10 +161,14 @@ def show_exam_result(request, course_id, submission_id):
 
     context['course'] = course
     context['submission'] = submission
-    context['selected'] = selected_choice_ids
+    context['selected'] = selected_ids
+    context['selected_ids'] = selected_ids
     context['grade'] = grade
+    context['score'] = total_score
+    context['possible'] = total_possible
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+
 
 
 

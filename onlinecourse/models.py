@@ -101,11 +101,11 @@ class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     question_text = models.CharField(max_length=1000)
-    grade = models.IntegerField(default=50)
-    question_grade = models.FloatField(default=50.0)
+    grade = models.IntegerField(default=1)
+    question_grade = models.FloatField(default=1.0)
 
     def __str__(self):
-        return f"Question: {self.question_text}"
+        return self.question_text
 
     # A sample model method to calculate if learner gets the score of the question
     def is_get_score(self, selected_ids):
@@ -123,7 +123,7 @@ class Choice(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Choice: {self.choice_text} (Correct: {self.is_correct})"
+        return self.choice_text
 
 
 # Submission Model
@@ -132,5 +132,6 @@ class Submission(models.Model):
     choices = models.ManyToManyField(Choice)
 
     def __str__(self):
-        return f"Submission {self.id} for Enrollment {self.enrollment.id}"
+        return f"Submission {self.id}"
+
 
